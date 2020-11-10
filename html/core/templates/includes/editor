@@ -1,0 +1,33 @@
+{% for ng in list_cam%}
+{{ng.slug}} = newcamd(
+		name = "{{ng.slug}}",
+		host = "{{ng.host}}",
+		port = {{ng.port}},
+		user = "{{ng.user}}",
+		pass = "{{ng.user_pass}}",
+		key  = "{{ng.key}}",
+})
+{% endfor %}{% for t in list_tuner%}
+{{t.dvb_id}} = dvb_tune({
+    adapter = "{{t.adapter_id}}",
+    type = "{{t.signal_type}}",
+    tp = "{{t.frequency}}:{{t.polarization}}:{{t.symbolrate}}",
+    lnb = "{{t.lof1}}:{{t.lof2}}:{{t.slof}}"
+    callback = function(data)
+        content = json.encode({
+            type = "dvb",
+            adapter = "{{t.adapter_id}}",
+            name = "{{t.dvb_id}}",
+            signal = math.floor((data.signal*100)/65536),
+            status = data.status,
+            snr = math.floor(((data.snr*100)/65536)),
+            ber = data.ber,
+            unc = data.unc,
+        })
+        send_monitor(content)
+    end 
+})
+{% endfor %}
+channels = {{% for str in list_strm%}
+    {name = "{{str.title}}", input = {"{{str.input_u}}"}, output = {"{{str.output_u}}"}, enable = {{str.enable|lower}},},{% endfor %}
+}

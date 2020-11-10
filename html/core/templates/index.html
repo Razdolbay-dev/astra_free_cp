@@ -1,0 +1,125 @@
+{% extends 'base.html' %}   
+{% block content %}
+{% if messages  %} 
+<div class="alert alert-success mt-2" role="alert">
+  {% for m in messages %}
+    {{m}}
+  {% endfor %}
+</div>
+{% endif %}
+<div class="container col-xl">
+    <div class="row" id="tables">
+      <div class="col">
+          <h3> Tuners </h3>
+        <table class="table table-striped mt-2">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">ID</th>
+                <th scope="col">SignalType</th>
+                <th scope="col">Transponder</th>
+                <th scope="col">Signal</th>
+                <th scope="col">Quality</th>
+                <th scope="col">#</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for tun in list_tuner%}
+                      <tr>
+                        <th scope="row">{{tun.title|truncatechars:"10"}}</th>
+                        <td><a href="{% url 'edittun' tun.id %}">{{tun.dvb_id}}</a></td>
+                        <td>{{tun.signal_type}}</td>
+                        <td>{{tun.frequency}}:{{tun.polarization}}:{{tun.symbolrate}}</td>
+                        <td style="text-align: center; background: linear-gradient(to right, red, rgb(196, 228, 14), rgb(94, 255, 0), green">{{tun.bitrate}} %</td>
+                        <td style="text-align: center; background: linear-gradient(to right, red, rgb(196, 228, 14), rgb(94, 255, 0), green">{{tun.snr}} %</td>
+                        <td>
+                          <form id="deltun{{tun.id}}" action="{% url 'deltun' tun.id %}" method="post"> {% csrf_token %} </form>
+                            <a href="javascript:void()" style="color: crimson;" onclick="delete_question{{tun.id}}()">X</a>
+                            <script>
+                              function delete_question{{tun.id}}(){
+                                if (confirm("Хорошо подумал?")) {
+                                document.getElementById('deltun{{tun.id}}').submit()
+                                }
+                              }
+                            </script>
+                        </td>
+                      </tr>
+                {% endfor %} 
+            </tbody>
+        </table> 
+      </div>
+      <div class="col">
+        <h3> Streams </h3>
+        <table class="table table-striped mt-2">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">ID</th>
+                <th scope="col">Bitrate</th>
+                <th scope="col">CC</th>
+                <th scope="col">PES</th>
+                <th scope="col">#</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for str in list_strm%}
+                      <tr>
+                        <th scope="row">{{str.title|truncatechars:"10"}}</th>
+                        <td><a href="{% url 'editstr' str.id %}">{{str.url|truncatechars:"7"}}</a></td>
+                      <td><a style="color: {% if str.bitrate < 21 %} red {% else %} green {% endif %};">{{str.bitrate}} Kb/s</a></td>
+                        <td>CC : {{str.cc_error}}</td>
+                        <td>PES : {{str.pes_error}}</td>
+                        <td>
+                          <form id="delstr{{str.id}}" action="{% url 'delstr' str.id %}" method="post"> {% csrf_token %} </form>
+                            <a style="color: red;" href="javascript:void()" onclick="delete_question{{str.id}}()">X</a>
+                            <script>
+                              function delete_question{{str.id}}() {
+                                if (confirm("Хорошо подумал?")) {
+                                document.getElementById('delstr{{str.id}}').submit()
+                                }
+                              }
+                            </script>
+                        </td>
+                      </tr>
+                {% endfor %} 
+            </tbody>
+        </table> 
+      </div>
+    </div> 
+
+    <h3> Softcam </h3>
+        <table class="table table-striped mt-2">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Host</th>
+                <th scope="col">User</th>
+                <th scope="col">Key</th>
+                <th scope="col">#</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for ng in list_cam%}
+                      <tr>
+                        <th scope="row"><a href="{% url 'editcam' ng.id %}">{{ng.name|truncatechars:"10"}}</a></th>
+                        <td>{{ng.host}}</a></td>
+                        <td>{{ng.user}}</td>
+                        <td>{{ng.key}}</td>
+                        <td>
+                          <form id="delng{{ng.id}}" action="{% url 'delcam' ng.id %}" method="post"> {% csrf_token %} </form>
+                            <a href="javascript:void()" style="color: crimson;" onclick="delete_question{{ng.id}}()">X</a>
+                            <script>
+                              function delete_question{{ng.id}}(){
+                                if (confirm("Хорошо подумал?")) {
+                                document.getElementById('delng{{ng.id}}').submit()
+                                }
+                              }
+                            </script>
+                        </td>
+                      </tr>
+                {% endfor %} 
+            </tbody>
+        </table> 
+</div>  
+
+{% endblock %}
