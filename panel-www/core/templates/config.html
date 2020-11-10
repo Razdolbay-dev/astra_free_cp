@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container col-xl">
+    <div class="card">
+        <h5 class="card-header">Edit Config</h5>
+        <div class="card-body">
+<textarea class="container col-xl card-body" style="min-height: 600px;" >
+{% include 'includes/editor' %}
+</textarea>
+          
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+</div>
+{% endblock %}
+
+

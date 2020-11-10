@@ -1,0 +1,26 @@
+{% for ng in list_cam%}
+{{ng.slug}} = newcamd(
+		name = "{{ng.slug}}",
+		host = "{{ng.host}}",
+		port = {{ng.port}},
+		user = "{{ng.user}}",
+		pass = "{{ng.user_pass}}",
+		key  = "{{ng.key}}",
+})
+{% endfor %}{% for t in list_tuner%}
+{{t.dvb_id}} = dvb_tune({
+    adapter = "{{t.adapter_id}}",
+    type = "{{t.signal_type}}",
+    tp = "{{t.frequency}}:{{t.polarization}}:{{t.symbolrate}}",
+    lnb = "{{t.lof1}}:{{t.lof2}}:{{t.slof}}" 
+})
+{% endfor %}
+{% for str in list_strm%}make_channel({
+    name = "{{str.title}}",
+    input = {"{{str.input}}"},
+    output = {"{{str.output}}"},
+    enable = {{str.enable|lower}},
+    {%if str.set_map != None%}map = "{{str.set_map}}",{%endif%}
+}){% endfor %}
+{% for str in list_strm%}
+--analyze {{str.output}} --no-stdout --log {{str.url}}.log --pid {{str.url}}.pid &{% endfor %}

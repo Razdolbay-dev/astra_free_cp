@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+{{ form|crispy }}
+    <div class="row">
+        <div class="col-6">
+            <button type="submit" method="post" class="btn btn-outline-success float-left">Apply</button>
+        </div>
+        <div class="col-6">
+            <a href="/" class="btn btn-outline-dark float-right">Cancel</a>
+        </div>
+    </div>
