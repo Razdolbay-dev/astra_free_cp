@@ -1,4 +1,4 @@
-{% extends 'base.html' %}   
+{% extends 'base.html' %}
 {% block content %}
 {% if messages  %} 
 <div class="alert alert-success mt-2" role="alert">
@@ -7,86 +7,43 @@
   {% endfor %}
 </div>
 {% endif %}
-<div class="container col-xl">
-    <div class="row" id="tables">
-      <div class="col">
-          <h3> Tuners </h3>
-        <table class="table table-striped mt-2">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">ID</th>
-                <th scope="col">SignalType</th>
-                <th scope="col">Transponder</th>
-                <th scope="col">Signal</th>
-                <th scope="col">Quality</th>
-                <th scope="col">#</th>
-              </tr>
-            </thead>
-            <tbody>
-                {% for tun in list_tuner%}
-                      <tr>
-                        <th scope="row">{{tun.title|truncatechars:"10"}}</th>
-                        <td><a href="{% url 'edittun' tun.id %}">{{tun.dvb_id}}</a></td>
-                        <td>{{tun.signal_type}}</td>
-                        <td>{{tun.frequency}}:{{tun.polarization}}:{{tun.symbolrate}}</td>
-                        <td style="text-align: center; background: linear-gradient(to right, red, rgb(196, 228, 14), rgb(94, 255, 0), green">{{tun.bitrate}} %</td>
-                        <td style="text-align: center; background: linear-gradient(to right, red, rgb(196, 228, 14), rgb(94, 255, 0), green">{{tun.snr}} %</td>
-                        <td>
-                          <form id="deltun{{tun.id}}" action="{% url 'deltun' tun.id %}" method="post"> {% csrf_token %} </form>
-                            <a href="javascript:void()" style="color: crimson;" onclick="delete_question{{tun.id}}()">X</a>
-                            <script>
-                              function delete_question{{tun.id}}(){
-                                if (confirm("Хорошо подумал?")) {
-                                document.getElementById('deltun{{tun.id}}').submit()
-                                }
-                              }
-                            </script>
-                        </td>
-                      </tr>
-                {% endfor %} 
-            </tbody>
-        </table> 
+<div class="main-content"><div>
+<div class="card-stack">
+  {% for tun in list_tuner%}
+    <a class="card card-true-{% if tun.bitrate < 10 %}0{%else%}2{% endif %}" href="{% url 'edittun' tun.id %}">
+      <div style="width: 150px;" class="card-name" title="{{tun.title}}">{{tun.title|truncatechars:"10"}}</div>      
+      <div class="dvb-status row monospace card-status">
+        <div class="text">S</div>
+        <div class="progress signal-level col-expand">
+          <div class="progress-level" style="width: {{tun.bitrate}}%;"></div>
+          <div class="progress-overlay"></div>
+        </div>
+          <div class="text">{{tun.bitrate}}%</div>
+        </div>
+        <div class="dvb-status row monospace card-status">
+          <div class="text">Q</div>
+          <div class="progress signal-level col-expand">
+            <div class="progress-level" style="width: {{tun.snr}}%;"></div>
+            <div class="progress-overlay"></div>
+          </div>
+        <div class="text">{{tun.snr}}%</div>
       </div>
-      <div class="col">
-        <h3> Streams </h3>
-        <table class="table table-striped mt-2">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">ID</th>
-                <th scope="col">Bitrate</th>
-                <th scope="col">CC</th>
-                <th scope="col">PES</th>
-                <th scope="col">#</th>
-              </tr>
-            </thead>
-            <tbody>
-                {% for str in list_strm%}
-                      <tr>
-                        <th scope="row">{{str.title|truncatechars:"10"}}</th>
-                        <td><a href="{% url 'editstr' str.id %}">{{str.url|truncatechars:"7"}}</a></td>
-                      <td><a style="color: {% if str.bitrate < 21 %} red {% else %} green {% endif %};">{{str.bitrate}} Kb/s</a></td>
-                        <td>CC : {{str.cc_error}}</td>
-                        <td>PES : {{str.pes_error}}</td>
-                        <td>
-                          <form id="delstr{{str.id}}" action="{% url 'delstr' str.id %}" method="post"> {% csrf_token %} </form>
-                            <a style="color: red;" href="javascript:void()" onclick="delete_question{{str.id}}()">X</a>
-                            <script>
-                              function delete_question{{str.id}}() {
-                                if (confirm("Хорошо подумал?")) {
-                                document.getElementById('delstr{{str.id}}').submit()
-                                }
-                              }
-                            </script>
-                        </td>
-                      </tr>
-                {% endfor %} 
-            </tbody>
-        </table> 
+      <div class="card-status monospace">
+        <span class="text">ber:{{tun.ber}} unc:{{tun.unc}}</span>
       </div>
-    </div> 
-
+  {% endfor %} 
+  {% for str in list_strm%}
+  <a class="card stream-spts card-true-{% if str.bitrate < 21 %}0{%else%}2{% endif %}" href="{% url 'editstr' str.id %}">
+    <div class="card-name" title="{{str.title}}">{{str.title|truncatechars:"10"}}</div>
+    <div class="card-image"></div>
+    <div class="card-status" title="{{str.output_u}}">
+    <span style="width: 150px;" class="text onair {% if str.bitrate < 21 %} cc {% endif %} ">{{str.bitrate}} Kbit/s</span>
+    </div>
+  </a>
+  {% endfor %} 
+</div> 
+</div></div>
+<!-- 
     <h3> Softcam </h3>
         <table class="table table-striped mt-2">
             <thead>
@@ -120,6 +77,33 @@
                 {% endfor %} 
             </tbody>
         </table> 
-</div>  
+</div> 
 
+<a class="card card-true-2" href="">
+  <div class="card-name" title="#40E 1Multiplex">#40E 1Multiplex</div>
+  <select class="card-action button icon icon-more small">
+    <option></option>
+    <option value="-3">Restart</option>
+    <option value="-1">Disable</option>
+    <option value="-2">Remove</option>
+  </select>
+  <div class="dvb-status row monospace card-status">
+    <div class="text">S</div>
+    <div class="progress signal-level col-expand">
+      <div class="progress-level" style="width: 46%;"></div>
+      <div class="progress-overlay"></div>
+    </div><div class="text">46%</div>
+  </div>
+  <div class="dvb-status row monospace card-status">
+    <div class="text">Q</div>
+    <div class="progress signal-level col-expand">
+      <div class="progress-level" style="width: 76%;"></div>
+      <div class="progress-overlay"></div>
+    </div>
+    <div class="text">76%</div>
+  </div>
+  <div class="card-status monospace">
+    <span class="text">ber:0 unc:0</span>
+  </div>
+</a>-->
 {% endblock %}

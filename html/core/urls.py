@@ -6,6 +6,7 @@ from .views import *
 
 urlpatterns = [
     path('', Dashboard.as_view(), name='home'),
+    path('tables/', Dashboard_table.as_view(), name='tables'),
     path('config/', EditConf.as_view(), name='conf'),
     path('streamadd/', NewStream.as_view(), name='streamadd'),
     path('camadd/', NewSoftcam.as_view(), name='camadd'),

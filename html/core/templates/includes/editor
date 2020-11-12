@@ -8,24 +8,21 @@
 		key  = "{{ng.key}}",
 })
 {% endfor %}{% for t in list_tuner%}
-{{t.dvb_id}} = dvb_tune({
+{{t.title}} = dvb_tune({type = "{{t.signal_type}}", adapter ={{t.adapter_id}}, tp = "{{t.frequency}}:{{t.polarization}}:{{t.symbolrate}}",
+callback = function(data)
+content = json.encode({
+    type = "dvb",
     adapter = "{{t.adapter_id}}",
-    type = "{{t.signal_type}}",
-    tp = "{{t.frequency}}:{{t.polarization}}:{{t.symbolrate}}",
-    lnb = "{{t.lof1}}:{{t.lof2}}:{{t.slof}}"
-    callback = function(data)
-        content = json.encode({
-            type = "dvb",
-            adapter = "{{t.adapter_id}}",
-            name = "{{t.dvb_id}}",
-            signal = math.floor((data.signal*100)/65536),
-            status = data.status,
-            snr = math.floor(((data.snr*100)/65536)),
-            ber = data.ber,
-            unc = data.unc,
-        })
-        send_monitor(content)
-    end 
+    name = "{{t.title}}",
+    signal = math.floor((data.signal*100)/65536),
+    status = data.status,
+    snr = math.floor(((data.snr*100)/65536)),
+    ber = data.ber,
+    unc = data.unc,
+})
+send_monitor(content)
+--log.info(content)
+end
 })
 {% endfor %}
 channels = {{% for str in list_strm%}

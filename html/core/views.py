@@ -36,6 +36,15 @@ class Dashboard(TemplateView):
         context['list_cam'] = Softcam.objects.all()
         return context
 
+class Dashboard_table(TemplateView):
+    template_name = 'tables.html'
+    def get_context_data(self, **kwargs):
+        context = super(Dashboard_table, self).get_context_data(**kwargs)
+        context['list_tuner'] = Tuner.objects.all()
+        context['list_strm'] = Stream.objects.all()
+        context['list_cam'] = Softcam.objects.all()
+        return context
+
 #Добавление
 class NewStream(CustomSuccessMessageMixin, CreateView):
     model = Stream
@@ -84,7 +93,7 @@ class UpdateSoftcam(CustomSuccessMessageMixin, UpdateView):
 class DelStream(DeleteView):
     model = Stream
     template_name = 'stream.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('tables')
     success_msg = 'Поток удален'
 
     def post(self,request,*args,**kwargs):
@@ -94,7 +103,7 @@ class DelStream(DeleteView):
 class DelTuner(DeleteView):
     model = Tuner
     template_name = 'tuner.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('tables')
     success_msg = 'Тюнер удален'
 
     def post(self,request,*args,**kwargs):
@@ -104,7 +113,7 @@ class DelTuner(DeleteView):
 class DelSoftcam(DeleteView):
     model = Softcam
     template_name = 'softcam.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('tables')
     success_msg = 'Софткам удален'
 
     def post(self,request,*args,**kwargs):
@@ -113,7 +122,7 @@ class DelSoftcam(DeleteView):
 # Прочие функции
 
 def read_file(request):
-    f = open('/var/log/astra.log')
+    f = open('astra.log')
     file_content = f.read()
     #os.system("/etc/init.d/astra4 stop")
     context = {
@@ -131,7 +140,6 @@ class EditConf(TemplateView):
         return context
 
 def send_json(request):
-
     tuners = list(Tuner.objects.values('dvb_id', 'adapter_id', 'signal_type', 'frequency', 'polarization', 'symbolrate' ))
     channels = list(Stream.objects.values('title', 'input', 'output', 'enable' ))
     softcam = list(Softcam.objects.values('name_id', 'name', 'host', 'port', 'user', 'user_pass', 'key' ))

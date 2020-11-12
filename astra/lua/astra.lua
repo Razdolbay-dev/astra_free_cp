@@ -11,6 +11,7 @@ local _t = 2 -- timer start signal
 local event_request = { host = "192.168.0.145", path = "/static/monitor.php", port = 80 }
 
 dofile(string.format(defdir) .. "/config.ini")
+--dofile(string.format(defdir) .. "/channels.ini")
 
 function send_monitor(content)
   --print(content)
