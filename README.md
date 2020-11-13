@@ -9,15 +9,7 @@ sudo apt-get install python3-pip apache2 libapache2-mod-wsgi-py3
 sudo pip3 install virtualenv 
 sudo apt install php libapache2-mod-php php-mysql mysql-server apache2 default-libmysqlclient-dev
 ```
-### Папку HTML переносим в любое удобное место
-переходим например ``cd /etc/astra/web``. 
-Юзаем команду ``virtualenv env & . env/bin/activate``
-
-```
-pip3 install -r requirements.txt
-python3 manage.py makemigrations
-python3 manage.py migrate
-```
+Я поместил все в ``/etc/astra/web``
 
 в app/settings.py меняем строчки на свои
 
@@ -30,5 +22,13 @@ python3 manage.py migrate
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
-}
+```
+### Папку HTML переносим в любое удобное место
+переходим например ``cd /etc/astra/web``. 
+Юзаем команду ``virtualenv env & . env/bin/activate``
+
+```
+pip3 install -r requirements.txt
+python3 manage.py makemigrations
+python3 manage.py migrate
 ```
